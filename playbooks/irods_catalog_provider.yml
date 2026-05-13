@@ -142,12 +142,12 @@
               deb http://apt-archive.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg
               main
 
-        - name: Ubuntu | install PostgreSQL 12 clients
+        - name: Ubuntu | install PostgreSQL 16 clients
           ansible.builtin.apt:
             update_cache: true
             name:
               - odbc-postgresql
-              - postgresql-client-12
+              - postgresql-client-16
             state: present
 
     - name: Install irods server packages

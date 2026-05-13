@@ -86,7 +86,7 @@
           loop:
             - bsd-mailx
             - odbc-postgresql
-            - postgresql-client-12
+            - postgresql-client-16
           loop_control:
             loop_var: pkg
 

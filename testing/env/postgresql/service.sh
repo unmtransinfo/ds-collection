@@ -26,7 +26,7 @@ main()
 
   if id --user postgres &> /dev/null
   then
-    sudo -i -u postgres pg_ctlcluster 12 main "$action"
+    sudo -i -u postgres pg_ctlcluster 16 main "$action"
   fi
 }
 

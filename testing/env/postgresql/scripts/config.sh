@@ -55,16 +55,16 @@ main()
     > "$sql"
 
   printf 'Starting PostgreSQL server\n'
-  pg_ctlcluster 12 main start > /dev/null
+  pg_ctlcluster 16 main start > /dev/null
 
   printf 'Initializing %s database ...\n' "$DB_NAME"
   init_db "$DBMS_PORT" "$DB_NAME" "$DB_USER" "$DB_PASSWORD" "$sql"
 
   printf 'Stopping PostgreSQL server\n'
-  pg_ctlcluster 12 main stop > /dev/null
+  pg_ctlcluster 16 main stop > /dev/null
 
   printf 'Granting access\n'
-  printf 'host  all  all  0.0.0.0/0  trust\n' >> /etc/postgresql/12/main/pg_hba.conf
+  printf 'host  all  all  0.0.0.0/0  trust\n' >> /etc/postgresql/16/main/pg_hba.conf
 }
 
 

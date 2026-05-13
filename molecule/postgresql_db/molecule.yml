@@ -13,7 +13,7 @@ platforms:
     shm_size: 128M
     command: >-
       sudo --login --user postgres
-        /usr/lib/postgresql/12/bin/postgres --config-file=/etc/postgresql/12/main/postgresql.conf
+        /usr/lib/postgresql/16/bin/postgres --config-file=/etc/postgresql/16/main/postgresql.conf
 provisioner:
   name: ansible
   inventory:
