@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ARG IRODS_CLERVER_PASSWORD=rods
 
@@ -14,7 +14,7 @@ RUN \
 	--mount=source=requirements.yml,target=/requirements.yml \
 	--mount=source=requirements-testing.txt,target=/requirements-testing.txt \
 	--mount=source=requirements-testing.yml,target=/requirements-testing.yml \
-<<EOF
+	<<EOF
 	set -o errexit
 
 ### Update system packages
@@ -35,7 +35,7 @@ RUN \
 	apt-get update
 	apt-get install --yes irods-icommands postgresql-client
 
-# XXX - Due to a bug in iCommands 4.3.1, irods_environment.json needs to exist prior to `iinit`
+# XXX - Due to a bug in iCommands 4.3.3, irods_environment.json needs to exist prior to `iinit`
 #       execution. See https://github.com/irods/irods_client_icommands/issues/493
 	mkdir /root/.irods
 	echo '{}' > /root/.irods/irods_environment.json

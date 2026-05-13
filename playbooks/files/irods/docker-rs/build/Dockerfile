@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ARG IRODS_HOST_UID
 ARG IRODS_SERVER_PORT_RANGE_START
@@ -13,7 +13,7 @@ America/Phoenix
 EOF
 
 COPY <<'EOF' /etc/apt/sources.list.d/renci-irods.list
-deb [arch=amd64] https://packages.irods.org/apt/ jammy main
+deb [arch=amd64] https://packages.irods.org/apt/ noble main
 EOF
 
 RUN <<'EOF'
@@ -27,7 +27,7 @@ RUN <<'EOF'
 	apt-get upgrade --yes
 
 # Install iRODS
-	apt-get install --yes irods-icommands=4.3.1 irods-runtime=4.3.1 irods-server=4.3.1
+	apt-get install --yes irods-icommands=4.3.3 irods-runtime=4.3.3 irods-server=4.3.3
 
 	groupadd --non-unique --system --gid="$IRODS_HOST_UID" irods
 
