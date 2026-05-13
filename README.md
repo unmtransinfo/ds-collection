@@ -80,7 +80,7 @@ The following actions need to be performed for each person who will be developin
 1. The ansible collections and roles need to be installed.
 
    ```shell
-   ansible-galaxy install --requirements-file requirements.yml
+   ansible-galaxy install -r requirements.yml
    ```
 
 > [!IMPORTANT]
