@@ -36,8 +36,8 @@
         - no_testing
 
     - name: Ensure pika installed
-      ansible.builtin.pip:
-        name: pika>=1.2
+      ansible.builtin.package:
+        name: python3-pika
         state: present
 
     - name: Provision CentOS

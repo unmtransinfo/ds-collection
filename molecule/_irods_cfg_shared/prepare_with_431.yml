@@ -182,10 +182,9 @@
   gather_facts: false
   tasks:
     - name: Install postgresql module prerequisites
-      ansible.builtin.pip:
-        name:
-          - ipaddress
-          - psycopg2-binary
+      ansible.builtin.package:
+        name: python3-psycopg2
+        state: present
 
     - name: Install iRODS server
       ansible.builtin.package:
