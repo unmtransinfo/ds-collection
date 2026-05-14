@@ -131,16 +131,18 @@
             state: present
 
         - name: Ubuntu | add PostgreSQL repository key
-          ansible.builtin.apt_key:
+          ansible.builtin.get_url:
             url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+            dest: /etc/apt/keyrings/postgresql-ACCC4CF8.asc
+            mode: '0644'
+            force: false
 
         - name: Ubuntu | install PostgreSQL repository
           ansible.builtin.copy:
             dest: /etc/apt/sources.list.d/pgdg.list
             mode: u+rw
-            content: >
-              deb http://apt-archive.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg
-              main
+            content: |
+              deb [signed-by=/etc/apt/keyrings/postgresql-ACCC4CF8.asc] http://apt-archive.postgresql.org/pub/repos/apt/ {{ ansible_lsb.codename }}-pgdg main
 
         - name: Ubuntu | install PostgreSQL 16 clients
           ansible.builtin.apt:

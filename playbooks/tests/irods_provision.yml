@@ -63,10 +63,10 @@
       when: ansible_distribution == 'Ubuntu'
       block:
         - name: Ubuntu | test install iRODS package repository signing key
-          ansible.builtin.command: apt-key list
+          ansible.builtin.stat:
+            path: /etc/apt/keyrings/irods-signing-key.asc
           register: resp
-          changed_when: false
-          failed_when: resp.stdout is not regex('iRODS Consortium')
+          failed_when: not resp.stat.exists
 
         - name: Ubuntu | test install iRODS repository
           ansible.builtin.stat:

@@ -12,17 +12,18 @@ COPY <<'EOF' /etc/timezone
 America/Phoenix
 EOF
 
-COPY <<'EOF' /etc/apt/sources.list.d/renci-irods.list
-deb [arch=amd64] https://packages.irods.org/apt/ noble main
-EOF
-
 RUN <<'EOF'
 	set -o errexit
 
-# Install dependencies
+# Install dependencies (Ubuntu repos only)
 	apt-get update
-	apt-get install --yes apt-utils ca-certificates gnupg wget
-	wget --quiet --output-document=- https://packages.irods.org/irods-signing-key.asc | apt-key add -
+	apt-get install --yes apt-utils ca-certificates wget
+
+# Add iRODS repository
+	wget --quiet --output-document=/etc/apt/keyrings/irods-signing-key.asc \
+		https://packages.irods.org/irods-signing-key.asc
+	printf 'deb [arch=amd64 signed-by=/etc/apt/keyrings/irods-signing-key.asc] https://packages.irods.org/apt/ noble main\n' \
+		> /etc/apt/sources.list.d/renci-irods.list
 	apt-get update
 	apt-get upgrade --yes
 
