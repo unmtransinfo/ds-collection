@@ -62,6 +62,11 @@
     - name: Test Ubuntu provisioning
       when: ansible_distribution == 'Ubuntu'
       block:
+        - name: Ubuntu | test ensure keyrings folder exists
+          ansible.builtin.file:
+            path: /etc/apt/keyrings
+            state: directory
+            mode: a+rx
         - name: Ubuntu | test install iRODS package repository signing key
           ansible.builtin.stat:
             path: /etc/apt/keyrings/irods-signing-key.asc

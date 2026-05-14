@@ -124,6 +124,11 @@
 - name: Prepare | Ubuntu prepare for iRODS
   hosts: Ubuntu
   tasks:
+    - name: Ubuntu | ensure keyrings folder exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: a+rx
     - name: Ubuntu | install iRODS package repository signing key
       ansible.builtin.get_url:
         url: https://packages.irods.org/irods-signing-key.asc
