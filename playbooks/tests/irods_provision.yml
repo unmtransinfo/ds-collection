@@ -91,7 +91,7 @@
             cmd: |
               set -o pipefail
               apt-cache policy \
-                | grep --quiet --regexp='{{ item }} -> 4\.3\.1\([.-].*\)\? with priority 1001'
+                | grep --quiet --regexp='{{ item }} -> 4\.3\.3\([.-].*\)\? with priority 1001'
           changed_when: false
           loop:
             - irods-resource-plugin-s3
