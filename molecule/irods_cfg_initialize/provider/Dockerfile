@@ -45,7 +45,7 @@ RUN sudo --login --user=postgres \
 	jq '.catalog_provider_hosts |= [ "provider.molecule" ]' /etc/irods/server_config.json \
 	| sudo --user=irods sponge /etc/irods/server_config.json
 
-RUN pip install jsonschema
+RUN apt install python3-jsonschema
 
 COPY provider/irods.service /etc/systemd/system
 

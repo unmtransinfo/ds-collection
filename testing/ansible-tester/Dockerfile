@@ -21,7 +21,11 @@ RUN \
 	apt-get update
 	apt-get --yes upgrade
 	apt-get --yes install \
-		dmidecode gpg-agent lsb-release python-is-python3 python3 python3-pip openssh-client rpm wget
+		dmidecode gpg-agent lsb-release python-is-python3 python3 python3-venv openssh-client rpm wget
+
+### Create virtualenv and install Python packages
+	python3 -m venv /opt/ansible-venv
+	. /opt/ansible-venv/bin/activate
 	pip install --requirement=/requirements.txt
 	pip install --requirement=/requirements-testing.txt
 	ansible-galaxy install -r /requirements.yml
@@ -44,6 +48,8 @@ RUN \
 	apt-get clean autoclean
 	rm --force --recursive /var/lib/apt/lists/*
 EOF
+
+ENV PATH=/opt/ansible-venv/bin:$PATH
 
 COPY --chmod=400 ssh-config /root/.ssh/config
 COPY ansible.cfg /root/.ansible.cfg
