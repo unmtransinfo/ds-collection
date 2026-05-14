@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 #
 # Usage:
-#  test-playbook INSPECT PRETTY VERBOSE HOSTS SETUP PLAYBOOK
+#  test-playbook INSPECT PRETTY VERBOSE HOSTS LIMIT SETUP PLAYBOOK
 #
 # Parameters:
 #  HOSTS     the inventory hosts to test against
 #  INSPECT   if this is set to any value, a shell will be opened that allows
 #            access to the volumes in the env containers.
+#  LIMIT     an Ansible host pattern to limit execution to (may be empty)
 #  PLAYBOOK  the name of the playbook being tested.
 #  PRETTY    if this is set to any value, more info is dumped and newlines in
 #            output are expanded.
@@ -35,8 +36,9 @@ main() {
 	local pretty="$2"
 	local verbose="$3"
 	local hosts="$4"
-	local setup="$5"
-	local playbook="$6"
+	local limit="$5"
+	local setup="$6"
+	local playbook="$7"
 
 	local inventory=/inventory/"$hosts"
 
@@ -58,14 +60,14 @@ main() {
 	fi
 
 	if (( rc == 0 )) && [[ -n "$setup" ]]; then
-		if ! setup_env "$verbose" "$inventory" "$modPath" "$setup"; then
+		if ! setup_env "$verbose" "$inventory" "$limit" "$modPath" "$setup"; then
 			display_failure 'ERROR: One of the setup playbooks failed'
 			rc=1
 		fi
 	fi
 
 	if (( rc == 0 )) && [[ -n "$playbook" ]]; then
-		if ! do_test "$verbose" "$inventory" "$modPath" "$playbook"; then
+		if ! do_test "$verbose" "$inventory" "$limit" "$modPath" "$playbook"; then
 			display_failure FAILED
 			rc=1
 		else
@@ -96,10 +98,15 @@ display_success() {
 do_test() {
 	local verbose="$1"
 	local inventory="$2"
-	local modPath="$3"
-	local playbook="$4"
+	local limit="$3"
+	local modPath="$4"
+	local playbook="$5"
 
 	local args=(--inventory-file="$inventory" --module-path="$modPath")
+
+	if [[ -n "$limit" ]]; then
+		args+=(--limit="$limit")
+	fi
 
 	local pbPath="$PLAYBOOK_DIR"/"$playbook"
 
@@ -134,7 +141,7 @@ do_test() {
 	printf 'checking idempotency\n'
 
 	local idempotencyRes
-	idempotencyRes="$(run_idempotency "$inventory" "$modPath" "$playbook")"
+	idempotencyRes="$(run_idempotency "$inventory" "$limit" "$modPath" "$playbook")"
 
 	if grep --quiet --regexp '^\(changed\|fatal\):' <<< "$idempotencyRes"; then
 		echo "$idempotencyRes"
@@ -147,24 +154,34 @@ do_test() {
 
 run_idempotency() {
 	local inventory="$1"
-	local modPath="$2"
-	local playbook="$3"
+	local limit="$2"
+	local modPath="$3"
+	local playbook="$4"
 
-	ansible-playbook \
-			--inventory-file="$inventory" \
-			--module-path="$modPath" \
-			--skip-tags='no_testing, non_idempotent' \
-			"$PLAYBOOK_DIR"/"$playbook" \
-		2>&1
+	local args=(
+		--inventory-file="$inventory"
+		--module-path="$modPath"
+		--skip-tags='no_testing, non_idempotent' )
+
+	if [[ -n "$limit" ]]; then
+		args+=(--limit="$limit")
+	fi
+
+	ansible-playbook "${args[@]}" "$PLAYBOOK_DIR"/"$playbook" 2>&1
 }
 
 setup_env() {
 	local verbose="$1"
 	local inventory="$2"
-	local modPath="$3"
-	local setup="$4"
+	local limit="$3"
+	local modPath="$4"
+	local setup="$5"
 
 	local args=(--inventory-file="$inventory" --skip-tags=no_testing)
+
+	if [[ -n "$limit" ]]; then
+		args+=(--limit="$limit")
+	fi
 
 	if [[ -n "$verbose" ]]
 	then
