@@ -132,9 +132,7 @@ install_ubuntu_packages() {
 		python3-virtualenv \
 		sudo
 
-	if [[ "$version" != '18.04' ]]; then
-		apt install --yes python-is-python3
-	fi
+	apt install --yes python-is-python3
 
 	apt-get clean autoclean
 	rm --force --recursive /var/lib/apt/lists/*
