@@ -85,16 +85,24 @@
     - name: Provision Ubuntu
       when: ansible_distribution == 'Ubuntu'
       block:
+        - name: Ubuntu | ensure keyrings folder exists
+          ansible.builtin.file:
+            path: /etc/apt/keyrings
+            state: directory
+            mode: a+rx
         - name: Ubuntu | install iRODS package repository signing key
-          ansible.builtin.apt_key:
+          ansible.builtin.get_url:
             url: https://packages.irods.org/irods-signing-key.asc
+            dest: /etc/apt/keyrings/irods-signing-key.asc
+            mode: '0644'
+            force: false
 
         - name: Ubuntu | install iRODS repository
           ansible.builtin.copy:
             dest: /etc/apt/sources.list.d/renci-irods.list
             mode: u+rw
             content: |
-              deb [arch=amd64] https://packages.irods.org/apt/ {{ ansible_lsb.codename }} main
+              deb [arch=amd64 signed-by=/etc/apt/keyrings/irods-signing-key.asc] https://packages.irods.org/apt/ {{ ansible_lsb.codename }} main
 
         - name: Ubuntu | update apt cache
           ansible.builtin.apt:
@@ -133,9 +141,6 @@
         state: present
       notify: Restart iRODS if needed
       loop:
-        - irods-netcdf-client_modules
-        - irods-netcdf-icommands
-        - irods-netcdf-server_modules
         - irods-resource-plugin-s3
 
     - name: Ensure iRODS attempts to start on boot

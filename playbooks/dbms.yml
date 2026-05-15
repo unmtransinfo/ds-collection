@@ -55,7 +55,7 @@
         postgresql_num_huge_pages: "{{ _dbms_mem_num_huge_pages }}"
         postgresql_huge_pages: "{{ 'on' if _dbms_mem_num_huge_pages|int > 0 else 'off' }}"
         postgresql_downstream_nodes: "{{ groups['dbms_replicas'] }}"
-        postgresql_wal_keep_segments: "{{ _dbms_wal_keep_segments }}"
+        postgresql_wal_keep_size: "{{ _dbms_wal_keep_size }}GB"
         postgresql_restart_allowed: "{{ _dbms_restart_allowed }}"
         postgresql_reboot_allowed: "{{ _dbms_reboot_allowed }}"
 

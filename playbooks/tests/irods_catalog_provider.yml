@@ -86,15 +86,15 @@
           loop:
             - bsd-mailx
             - odbc-postgresql
-            - postgresql-client-12
+            - postgresql-client-16
           loop_control:
             loop_var: pkg
 
         - name: Ubuntu | verify PostgreSQL signing key installed
-          ansible.builtin.command: apt-key list
+          ansible.builtin.stat:
+            path: /etc/apt/keyrings/postgresql-ACCC4CF8.asc
           register: resp
-          changed_when: false
-          failed_when: resp.stdout is not regex('PostgreSQL Debian Repository')
+          failed_when: not resp.stat.exists
 
         - name: Ubuntu | verify PostgreSQL repository installed
           ansible.builtin.stat:

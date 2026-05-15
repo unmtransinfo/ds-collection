@@ -1,4 +1,4 @@
-FROM test-env-base:ubuntu1804
+FROM test-env-base:ubuntu2404
 
 ARG IRODS_CATALOG_PROVIDER=csp
 ARG IRODS_CONTROL_PLANE_KEY=TEMPORARY__32byte_ctrl_plane_key
@@ -20,30 +20,29 @@ ARG IRODS_ZONE_USER=rods
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-ADD --chmod=444 \
-	https://packages.irods.org/irods-signing-key.asc /etc/apt/trusted.gpg.d/irods-signing-key.asc
-
 RUN \
 	--mount=target=/tmp/config-irods,source=irods-consumer/scripts/config-irods.sh \
 	--mount=target=/tmp/service.sh.template,source=irods-consumer/scripts/service.sh.template \
 	--mount=target=/tmp/prep-svc-script,source=irods-consumer/scripts/prep-svc-script.sh \
-<<EOF
+	<<EOF
 	set -o errexit
 
 ### Install iRODS
-	printf 'deb [arch=amd64] https://packages.irods.org/apt/ %s main\n' \
+	mkdir --parents /etc/apt/keyrings
+	wget --quiet --output-document=/etc/apt/keyrings/irods-signing-key.asc \
+		https://packages.irods.org/irods-signing-key.asc
+	printf 'deb [arch=amd64 signed-by=/etc/apt/keyrings/irods-signing-key.asc] https://packages.irods.org/apt/ %s main\n' \
 			"$(lsb_release --codename --short)" \
 		> /etc/apt/sources.list.d/renci-irods.list
-	printf 'Package: irods-*\nPin: version 4.3.3\nPin-Priority: 1001\n' \
+	printf 'Package: irods-*\nPin: version 4.3.3-*\nPin-Priority: 1001\n' \
 		> /etc/apt/preferences.d/irods
 	apt-get update
 	apt-get --yes install \
-		irods-netcdf-client_modules \
-		irods-netcdf-icommands \
-		irods-netcdf-server_modules \
 		irods-server \
-		rsyslog
-	python3 -m pip install 'python-irodsclient<3.2'  # 3.2 does not work on Ubuntu 18.04
+		python3-venv \
+		python3-irodsclient \
+		rsyslog \
+		wget
 
 ### Configure iRODS
 	/tmp/config-irods

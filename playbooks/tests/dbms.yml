@@ -33,7 +33,7 @@
           - cyverse_conf is search('min_wal_size = 80MB')
           - cyverse_conf is search('checkpoint_completion_target = 0.5' | regex_escape)
           - cyverse_conf is not search('^max_wal_senders =')
-          - cyverse_conf is not search('^wal_keep_segments =')
+          - cyverse_conf is not search('^wal_keep_size =')
           - cyverse_conf is not search('^hot_standby = ')
           - cyverse_conf is not search('^hot_standby_feedback = ')
           - cyverse_conf is search('random_page_cost = 4.0' | regex_escape)

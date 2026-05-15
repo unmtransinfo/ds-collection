@@ -62,11 +62,16 @@
     - name: Test Ubuntu provisioning
       when: ansible_distribution == 'Ubuntu'
       block:
+        - name: Ubuntu | test ensure keyrings folder exists
+          ansible.builtin.file:
+            path: /etc/apt/keyrings
+            state: directory
+            mode: a+rx
         - name: Ubuntu | test install iRODS package repository signing key
-          ansible.builtin.command: apt-key list
+          ansible.builtin.stat:
+            path: /etc/apt/keyrings/irods-signing-key.asc
           register: resp
-          changed_when: false
-          failed_when: resp.stdout is not regex('iRODS Consortium')
+          failed_when: not resp.stat.exists
 
         - name: Ubuntu | test install iRODS repository
           ansible.builtin.stat:
@@ -86,7 +91,7 @@
             cmd: |
               set -o pipefail
               apt-cache policy \
-                | grep --quiet --regexp='{{ item }} -> 4\.3\.1\([.-].*\)\? with priority 1001'
+                | grep --quiet --regexp='{{ item }} -> 4\.3\.3\([.-].*\)\? with priority 1001'
           changed_when: false
           loop:
             - irods-resource-plugin-s3

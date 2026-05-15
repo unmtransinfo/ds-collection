@@ -16,7 +16,7 @@
   block:
     - name: Stop database on secondaries
       ansible.builtin.service:
-        name: postgresql@12-main.service
+        name: postgresql@16-main.service
         state: stopped
       tags: no_testing
 
@@ -54,6 +54,6 @@
 
     - name: Start database on secondaries
       ansible.builtin.service:
-        name: postgresql@12-main.service
+        name: postgresql@16-main.service
         state: started
       tags: no_testing

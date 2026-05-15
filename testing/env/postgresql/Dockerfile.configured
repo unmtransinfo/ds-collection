@@ -1,4 +1,4 @@
-FROM test-env-base:ubuntu2004
+FROM test-env-base:ubuntu2404
 
 ARG DB_NAME=ICAT
 ARG DB_PASSWORD=testpassword
@@ -23,7 +23,7 @@ RUN <<EOF
 	rm --force --recursive /var/lib/apt/lists/*
 EOF
 
-COPY --chown=postgres:postgres postgresql/config/* /etc/postgresql/12/main/
+COPY --chown=postgres:postgres postgresql/config/* /etc/postgresql/16/main/
 
 USER postgres
 

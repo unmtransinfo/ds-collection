@@ -8,12 +8,12 @@ postgresql_downstream_nodes: []
 
 postgresql_upstream_node: null
 
-postgresql_conf_path: /etc/postgresql/12/main
+postgresql_conf_path: /etc/postgresql/16/main
 
 postgresql_db: postgres
 
 # changing this requires adjusting the systemctl file.
-postgresql_db_path: /var/lib/postgresql/12/main
+postgresql_db_path: /var/lib/postgresql/16/main
 
 # configuration defaults
 postgresql_checkpoint_completion_target: 0.5
@@ -33,9 +33,9 @@ postgresql_log_min_duration_statement: -1
 
 postgresql_max_connections: 100
 
-postgresql_pg_hba: /etc/postgresql/12/main/pg_hba.conf
+postgresql_pg_hba: /etc/postgresql/16/main/pg_hba.conf
 
-postgresql_wal_keep_segments: 0
+postgresql_wal_keep_size: 0
 postgresql_max_wal_senders: 10
 postgresql_min_wal_size: 80MB
 postgresql_max_wal_size: 1GB

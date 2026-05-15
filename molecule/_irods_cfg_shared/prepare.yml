@@ -20,11 +20,7 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Install pip
-      ansible.builtin.package:
-        name: python3-pip
-        state: present
-
     - name: Install jsonschema
-      ansible.builtin.pip:
-        name: jsonschema
+      ansible.builtin.package:
+        name: python3-jsonschema
+        state: present
