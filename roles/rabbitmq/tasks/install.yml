@@ -59,27 +59,30 @@
       deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb1.rabbitmq.com/rabbitmq-server/ubuntu/noble noble main
       deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb2.rabbitmq.com/rabbitmq-server/ubuntu/noble noble main
 
+# TODO: verify that this is accurate - may need to use base apt repos so we can use rabbitmq v3.12
+# update erlang base and rabbitmq-server for ubuntu 24 
+# using oldest available versions from Team RabbitMQ for Ubuntu 24 OS
 - name: Install | Erlang and RabbitMQ
   ansible.builtin.apt:
     name:
-      - 'erlang-base=1:25.1.2-1'
-      - 'erlang-asn1=1:25.1.2-1'
-      - 'erlang-crypto=1:25.1.2-1'
-      - 'erlang-eldap=1:25.1.2-1'
-      - 'erlang-ftp=1:25.1.2-1'
-      - 'erlang-inets=1:25.1.2-1'
-      - 'erlang-mnesia=1:25.1.2-1'
-      - 'erlang-os-mon=1:25.1.2-1'
-      - 'erlang-parsetools=1:25.1.2-1'
-      - 'erlang-public-key=1:25.1.2-1'
-      - 'erlang-runtime-tools=1:25.1.2-1'
-      - 'erlang-snmp=1:25.1.2-1'
-      - 'erlang-ssl=1:25.1.2-1'
-      - 'erlang-syntax-tools=1:25.1.2-1'
-      - 'erlang-tftp=1:25.1.2-1'
-      - 'erlang-tools=1:25.1.2-1'
-      - 'erlang-xmerl=1:25.1.2-1'
-      - 'rabbitmq-server=3.11.23-1'
+      - 'erlang-base=1:27.3-1'
+      - 'erlang-asn1=1:27.3-1'
+      - 'erlang-crypto=1:27.3-1'
+      - 'erlang-eldap=1:27.3-1'
+      - 'erlang-ftp=1:27.3-1'
+      - 'erlang-inets=1:27.3-1'
+      - 'erlang-mnesia=1:27.3-1'
+      - 'erlang-os-mon=1:27.3-1'
+      - 'erlang-parsetools=1:27.3-1'
+      - 'erlang-public-key=1:27.3-1'
+      - 'erlang-runtime-tools=1:27.3-1'
+      - 'erlang-snmp=1:27.3-1'
+      - 'erlang-ssl=1:27.3-1'
+      - 'erlang-syntax-tools=1:27.3-1'
+      - 'erlang-tftp=1:27.3-1'
+      - 'erlang-tools=1:27.3-1'
+      - 'erlang-xmerl=1:27.3-1'
+      - 'rabbitmq-server=4.1.7-1'
     update_cache: true
     state: fixed
 
@@ -88,7 +91,7 @@
     dest: /etc/apt/preferences.d/erlang
     content: |
       Package: erlang*
-      Pin: version 1:25.1.2-1
+      Pin: version 1:27.3-1
       Pin-Priority: 1001
     mode: u+r
 
@@ -97,6 +100,6 @@
     dest: /etc/apt/preferences.d/rabbitmq
     content: |
       Package: rabbitmq-server
-      Pin: version 3.11.23-1
+      Pin: version 4.1.7-1
       Pin-Priority: 1001
     mode: u+r
