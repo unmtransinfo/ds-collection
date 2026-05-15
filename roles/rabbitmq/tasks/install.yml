@@ -23,6 +23,7 @@
     - /usr/share/keyrings/rabbitmq.E495BB49CC4BBE5B.asc
     - /usr/share/keyrings/com.rabbitmq.team.asc
 
+
 - name: Install | install CA certificates for get_url
   ansible.builtin.apt:
     name:
@@ -33,56 +34,56 @@
     update_cache: true
     state: present
 
-- name: Install | team RabbitMQ main signing key
-  ansible.builtin.shell:
-    executable: /bin/bash
-    creates: /usr/share/keyrings/com.rabbitmq.team.gpg
-    cmd: |
-      set -o pipefail
-      curl --fail --location --silent --tlsv1 \
-          https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA \
-        | gpg --dearmor \
-        > /usr/share/keyrings/com.rabbitmq.team.gpg
+# Commenting the tasks belows because in Ubuntu 24 if we use apt repos maintained by Team RabbitMQ then we are forced to use rabbitmq-server >= 4.1
 
-- name: Install | add apt repositories maintained by Team RabbitMQ
-  ansible.builtin.copy:
-    dest: /etc/apt/sources.list.d/rabbitmq.list
-    mode: u+r
-    content: |
-      ## Modern Erlang/OTP releases
-      ##
-      deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb1.rabbitmq.com/rabbitmq-erlang/ubuntu/noble noble main
-      deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb2.rabbitmq.com/rabbitmq-erlang/ubuntu/noble noble main
+# - name: Install | team RabbitMQ main signing key
+#   ansible.builtin.shell:
+#     executable: /bin/bash
+#     creates: /usr/share/keyrings/com.rabbitmq.team.gpg
+#     cmd: |
+#       set -o pipefail
+#       curl --fail --location --silent --tlsv1 \
+#           https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA \
+#         | gpg --dearmor \
+#         > /usr/share/keyrings/com.rabbitmq.team.gpg
 
-      ## Provides modern RabbitMQ releases
-      ##
-      deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb1.rabbitmq.com/rabbitmq-server/ubuntu/noble noble main
-      deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb2.rabbitmq.com/rabbitmq-server/ubuntu/noble noble main
+# - name: Install | add apt repositories maintained by Team RabbitMQ
+#   ansible.builtin.copy:
+#     dest: /etc/apt/sources.list.d/rabbitmq.list
+#     mode: u+r
+#     content: |
+#       ## Modern Erlang/OTP releases
+#       ##
+#       deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb1.rabbitmq.com/rabbitmq-erlang/ubuntu/noble noble main
+#       deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb2.rabbitmq.com/rabbitmq-erlang/ubuntu/noble noble main
 
-# TODO: verify that this is accurate - may need to use base apt repos so we can use rabbitmq v3.12
-# update erlang base and rabbitmq-server for ubuntu 24 
-# using oldest available versions from Team RabbitMQ for Ubuntu 24 OS
+#       ## Provides modern RabbitMQ releases
+#       ##
+#       deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb1.rabbitmq.com/rabbitmq-server/ubuntu/noble noble main
+#       deb [arch=amd64 signed-by=/usr/share/keyrings/com.rabbitmq.team.gpg] https://deb2.rabbitmq.com/rabbitmq-server/ubuntu/noble noble main
+
+# NOTE: for ubuntu 24 oldest version of rabbitmq available is 3.12.1
 - name: Install | Erlang and RabbitMQ
   ansible.builtin.apt:
     name:
-      - 'erlang-base=1:27.3-1'
-      - 'erlang-asn1=1:27.3-1'
-      - 'erlang-crypto=1:27.3-1'
-      - 'erlang-eldap=1:27.3-1'
-      - 'erlang-ftp=1:27.3-1'
-      - 'erlang-inets=1:27.3-1'
-      - 'erlang-mnesia=1:27.3-1'
-      - 'erlang-os-mon=1:27.3-1'
-      - 'erlang-parsetools=1:27.3-1'
-      - 'erlang-public-key=1:27.3-1'
-      - 'erlang-runtime-tools=1:27.3-1'
-      - 'erlang-snmp=1:27.3-1'
-      - 'erlang-ssl=1:27.3-1'
-      - 'erlang-syntax-tools=1:27.3-1'
-      - 'erlang-tftp=1:27.3-1'
-      - 'erlang-tools=1:27.3-1'
-      - 'erlang-xmerl=1:27.3-1'
-      - 'rabbitmq-server=4.1.7-1'
+      - 'erlang-base=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-asn1=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-crypto=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-eldap=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-ftp=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-inets=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-mnesia=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-os-mon=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-parsetools=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-public-key=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-runtime-tools=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-snmp=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-ssl=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-syntax-tools=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-tftp=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-tools=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'erlang-xmerl=1:25.3.2.8+dfsg-1ubuntu4.6'
+      - 'rabbitmq-server=3.12.1-1ubuntu1.2'
     update_cache: true
     state: fixed
 
@@ -91,7 +92,7 @@
     dest: /etc/apt/preferences.d/erlang
     content: |
       Package: erlang*
-      Pin: version 1:27.3-1
+      Pin: version 1:25.3.2.8+dfsg-1ubuntu4.6
       Pin-Priority: 1001
     mode: u+r
 
@@ -100,6 +101,6 @@
     dest: /etc/apt/preferences.d/rabbitmq
     content: |
       Package: rabbitmq-server
-      Pin: version 4.1.7-1
+      Pin: version 3.12.1-1ubuntu1.2
       Pin-Priority: 1001
     mode: u+r
