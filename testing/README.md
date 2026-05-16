@@ -134,3 +134,43 @@ Two special task tags control how `ansible-tester` handles tasks during testing:
 
 - `non_idempotent` — tasks tagged with this are skipped during the idempotency check, since they are expected to always report a change (e.g., forced restarts).
 - `no_testing` — tasks tagged with this are skipped entirely inside the test environment (e.g., tasks that modify `/etc/hosts`).
+
+## Component Test Reference (Ubuntu 24)
+
+All commands below are run from the `testing/` directory. Every environment container referenced here is built on Ubuntu 24.04. For the equivalent Molecule tests, see [`molecule/README.md`](../molecule/README.md).
+
+### iRODS Installation & Configuration
+
+Uses `-L '*ubuntu*'` to restrict execution to the Ubuntu 24.04 environment containers (`provider_unconfigured`, `consumer_configured_ubuntu`, etc.).
+
+```bash
+# Test iRODS package installation
+./test-playbook -P irods_provision -L '*ubuntu*'
+
+# Test iRODS configuration (provision first as setup)
+./test-playbook -S irods_provision -P irods_cfg -L 'irods_resource_native:&*ubuntu*'
+```
+
+### HAProxy Installation & Configuration
+
+Not applicable. There is no `proxy` group in any inventory hosts file and no test playbook for `proxy.yml` in `playbooks/tests/`.
+
+### RabbitMQ Installation & Configuration
+
+The `amqp` container is built from `test-env-base:ubuntu2404`.
+
+```bash
+./test-playbook -P amqp
+```
+
+### PostgreSQL Installation & Configuration
+
+Both `dbms_configured` and `dbms_unconfigured` containers are built from `test-env-base:ubuntu2404`. Use `hosts-unconfigured-dbms` to test against a fresh node.
+
+```bash
+# Test DBMS installation and configuration against unconfigured nodes
+./test-playbook -P dbms -I hosts-unconfigured-dbms
+
+# Test iCAT database setup (requires DBMS to be set up first)
+./test-playbook -S dbms -P dbms_icat -I hosts-unconfigured-dbms
+```
