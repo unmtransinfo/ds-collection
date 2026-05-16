@@ -18,7 +18,7 @@ molecule test -s <scenario>
 For example:
 
 ```bash
-molecule test -s haproxy
+molecule test -s postgresql
 ```
 
 ## Component Test Reference (Ubuntu 24)
