@@ -135,6 +135,7 @@ backend irods_direct
 #         SFTP           #
 ##########################
 
+{% if haproxy_sftp_hosts %}
 listen sftp
   bind                    :{{ haproxy_sftp_port }}
   acl                     vip-src     src -f /etc/haproxy/vip.lst
@@ -143,12 +144,14 @@ listen sftp
   tcp-request connection  track-sc1 src table concurrency_st
   tcp-request connection  reject if block-conn
   server                  sftp {{ haproxy_sftp_hosts[0] if haproxy_sftp_hosts[0]|ansible.utils.ipaddr else lookup('dig', haproxy_sftp_hosts[0]) }}:{{ haproxy_sftp_backend_port }} send-proxy-v2
+{% endif %}
 
 
 ##########################
 #         WEBDAV         #
 ##########################
 
+{% if haproxy_webdav_hosts %}
 listen webdav
   mode            http
   bind            :{{ haproxy_webdav_port }}
@@ -160,13 +163,13 @@ listen webdav
   acl             block-conn  sc1_conn_cur gt 10
   http-request    track-sc1 src table concurrency_st if !vip-src
   http-request    deny if !vip-src !allowed blocked or block-conn
-{% if haproxy_tls_crt %}
+{%   if haproxy_tls_crt %}
   http-request    redirect scheme https
-{% else %}
+{%   else %}
   server          dav {{ haproxy_webdav_hosts[0] if haproxy_webdav_hosts[0]|ansible.utils.ipaddr else lookup('dig', haproxy_webdav_hosts[0]) }}
-{% endif %}
+{%   endif %}
 
-{% if haproxy_tls_crt %}
+{%   if haproxy_tls_crt %}
 listen webdavs
   mode            http
   bind            :{{ haproxy_webdav_tls_port }} ssl crt {{ haproxy_tls_crt }}
@@ -179,4 +182,5 @@ listen webdavs
   http-request    track-sc1 src table concurrency_st if !vip-src
   http-request    redirect code 307 location https://unblockme.cyverse.org/ if !vip-src !allowed blocked or block-conn
   server          dav {{ haproxy_webdav_hosts[0] if haproxy_webdav_hosts[0]|ansible.utils.ipaddr else lookup('dig', haproxy_webdav_hosts[0]) }} ssl crt {{ haproxy_tls_crt }} ca-file {{ haproxy_tls_crt }}
+{%   endif %}
 {% endif %}
