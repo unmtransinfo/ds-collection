@@ -14,6 +14,7 @@
           - rabbitmq_conf is search("listeners.tcp.1 = :::1" | regex_escape)
           - rabbitmq_conf is search("management.tcp.port = 2" | regex_escape)
 
+# NOTE: for ubuntu 24 oldest version of rabbitmq available is 3.12.1
 - name: Verify | test installation
   hosts: all
   tasks:
@@ -35,8 +36,8 @@
       with_items:
         - /etc/apt/preferences.d/erlang
         - /etc/apt/preferences.d/rabbitmq
-        - /etc/apt/sources.list.d/rabbitmq.list
-        - /usr/share/keyrings/com.rabbitmq.team.gpg
+        # - /etc/apt/sources.list.d/rabbitmq.list # not using apt repos maintained by rabbitmq team with Ubuntu 24 because we'd be forced to use rabbitmq-server >= 4.1
+        # - /usr/share/keyrings/com.rabbitmq.team.gpg
       register: resp
       failed_when: not resp.stat.exists or not resp.stat.rusr
 
@@ -44,7 +45,7 @@
       ansible.builtin.assert:
         that:
           - ansible_facts.packages[item] | length == 1
-          - ansible_facts.packages[item][0].version is version('1:25.2', '<')
+          - ansible_facts.packages[item][0].version is version('1:26', '<')
       with_items:
         - erlang-base
         - erlang-asn1
@@ -68,7 +69,7 @@
       ansible.builtin.assert:
         that:
           - ansible_facts.packages['rabbitmq-server'] | length == 1
-          - ansible_facts.packages['rabbitmq-server'][0].version is version('3.12', '<')
+          - ansible_facts.packages['rabbitmq-server'][0].version is version('3.13', '<')
 
     - name: Test rabbitmq config file placement
       ansible.builtin.stat:
