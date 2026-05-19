@@ -3,8 +3,8 @@
   ansible.builtin.apt:
     update_cache: true
     pkg:
-      - postgresql
-      - postgresql-client
+      - postgresql-16
+      - postgresql-client-16
       - python3-psycopg2
     state: present
 
