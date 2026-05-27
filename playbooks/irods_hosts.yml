@@ -22,8 +22,6 @@
           {% for i in groups['irods_catalog'] %}
           {%   if inventory_hostname != i and not i|ansible.utils.ipaddr %}
           {{ lookup('dig', i) }} {{ i }}
-          {%   elif inventory_hostname == i and ansible_fqdn != i and not i|ansible.utils.ipaddr %}
-          {{ ansible_default_ipv4.address }} {{ i }}
           {%   endif %}
           {% endfor %}
           {% for r in groups['irods_resource'] | difference(groups['irods_catalog']) %}
