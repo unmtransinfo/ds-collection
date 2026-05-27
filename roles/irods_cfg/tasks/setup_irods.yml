@@ -13,6 +13,24 @@
         - server_config.yml
         - irods_environment_server.yml
 
+    - name: Install templated rule bases
+      ansible.builtin.template:
+        src: "{{ item }}"
+        dest: "{{ _root_dir }}/etc/irods/{{ item | basename | regex_replace('.j2$') }}"
+        owner: "{{ irods_cfg_system_account_name }}"
+        group: "{{ irods_cfg_system_group_name }}"
+        mode: u+r
+      with_fileglob: "{{ irods_cfg_rulebases_templated }}"
+
+    - name: Install static rule bases
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ _root_dir }}/etc/irods/{{ item | basename }}"
+        owner: "{{ irods_cfg_system_account_name }}"
+        group: "{{ irods_cfg_system_group_name }}"
+        mode: u+r
+      with_fileglob: "{{ irods_cfg_rulebases_static }}"
+
     - name: Create setup configuration file
       ansible.builtin.template:
         src: setup_configuration.json.j2
