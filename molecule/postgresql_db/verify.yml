@@ -28,6 +28,6 @@
 
     - name: Test allow communication with Postgres DBMS
       ansible.builtin.command: >-
-        grep --perl-regexp --quiet --regex='^host\tdb\tusername\t1.1.1.1\/32\t+md5'
+        grep --perl-regexp --quiet --regex='^host\tdb\tusername\t1.1.1.1\/32\t+scram-sha-256'
           /etc/postgresql/16/main/pg_hba.conf
       changed_when: false

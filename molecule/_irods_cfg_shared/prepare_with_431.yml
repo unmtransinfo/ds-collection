@@ -231,7 +231,7 @@
         users: irods
         source: 127.0.0.1/32
         databases: ICAT
-        method: md5
+        method: scram-sha-256
         state: present
       notify: Reload postgres, {{ ansible_distribution }}
 
@@ -242,7 +242,7 @@
         users: all
         source: "{{ item }}"
         databases: all
-        method: md5
+        method: scram-sha-256
         state: present
       loop:
         - 127.0.0.1/32

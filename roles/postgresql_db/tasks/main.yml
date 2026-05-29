@@ -20,7 +20,7 @@
     databases: "{{ postgresql_db_name }}"
     users: "{{ postgresql_db_admin_username }}"
     source: "{{ item if item | ansible.utils.ipaddr else lookup('dig', item) }}/32"
-    method: md5
+    method: scram-sha-256
   notify:
     - Reload
   loop: "{{ postgresql_db_client_hosts }}"
